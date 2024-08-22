@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Диспетчер задач</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@700&display=swap" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+    <style>
+        .fon {
+        {#background: url('https://miro.medium.com/v2/resize:fit:1358/1*JvtY5raqiui_xcYE-LOixg.jpeg') no-repeat fixed;);#}
+            background: #0dcaf0
+        }
+    </style>
+
+</head>
+
+<body class="fon">
+<div class="container-fluid">
+    {% include 'base/navbar.html' %}
+</div>
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-sm-12">
+            {% block msg %}
+
+            {% endblock msg %}
+        </div>
+    </div>
+
+    <div class="row">
+        {% block side %}
+        {% endblock side %}
+
+        {% block content %}
+        {% endblock content %}
+    </div>
+
+</div>
+
+
+<script src="{% static 'js/jquery.js' %}"></script>
+<script src="{% static 'js/popper.js' %}"></script>
+<script src="{% static 'js/bootstrap.js' %}"></script>
+
+
+</body>
+</html>

@@ -1,0 +1,55 @@
+<nav class="navbar navbar-expand-lg navbar-dark text-dark bg-dark border border-dark fixed-top">
+    <div class="container-fluid">
+
+        <a class="navbar-brand text-dark bg-light border border-dark-subtle rounded-3 p-2" href="/">Диспетчер задач</a>
+
+        <a class="navbar-brand text-dark bg-light border border-dark-subtle rounded-3 p-2" href={% url "projects" %}>Проекты</a>
+
+        <a class="logo_2 Roboto border border-dark-subtle rounded-3 p-2" href={% url "about:about_project" %}>О
+            проекте</a>
+
+        <a class="logo_3 Roboto border border-dark-subtle rounded-3 p-2" href={% url "about:about_me" %}>Не обо мне</a>
+
+        <a class="logo Roboto bg-light border border-dark-subtle rounded-3 p-2" href="/">
+            {% if user.is_superuser %}
+                Имя: {{ user.username }} | Почта: {{ user.email }}
+            {% elif user.profile %}
+                Имя: {{ user.profile.first_name }} {{ user.profile.last_name }} | Почта: {{ user.profile.email }}
+            {% else %}
+                Имя: {{ user.username }} | Почта: {{ user.email }}
+            {% endif %}
+        </a>
+
+        <button class="navbar-toggler bg-dark" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav">
+
+
+                {% if request.user.is_authenticated %}
+
+
+
+                    <li class="nav-item">
+                        <a class="nav-link Roboto btn btn-outline-danger" href="{% url 'logout' %}">Выход из системы</a>
+                    </li>
+
+
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link Roboto" href="{% url 'user_registration' %}">Регистрация</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link Roboto" href="{% url 'login' %}">Вход в систему</a>
+                    </li>
+                {% endif %}
+
+
+            </ul>
+        </div>
+    </div>
+</nav>
+

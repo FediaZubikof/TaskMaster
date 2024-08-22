@@ -1,0 +1,6 @@
+Команды для запуска Celery и Celery Beat:
+
+celery -A task_master worker --loglevel=info
+celery -A task_master beat --loglevel=info
+
+pip freeze > requirements.txt

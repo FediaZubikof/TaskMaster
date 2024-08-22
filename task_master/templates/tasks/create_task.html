@@ -1,0 +1,15 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Создание новой задачи</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }} <!-- Форма создания задачи -->
+        <button type="submit" class="btn btn-primary mt-3">Создать задачу</button>
+    </form>
+
+    <a href="{% url 'tasks' %}" class="btn btn-secondary mt-3">Назад к списку задач</a>
+</div>
+{% endblock %}

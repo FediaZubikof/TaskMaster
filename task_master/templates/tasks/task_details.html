@@ -1,0 +1,85 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="col-12 my-5">
+    <h1 class="text-dark Roboto my-5">Детали задачи</h1>
+    {% if messages %}
+    {% for message in messages %}
+    <p {% if message.tags %} class="Roboto alert alert-{{ message.tags }} mb-5 {% endif %} ">{{ message }} </p>
+    {% endfor %}
+    {% endif %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-8 mt-5">
+                <div class="card bg bg-warning border-dark mb-3 text-dark Roboto">
+                    <div class="card-header">
+                        <div class="container text-center">
+                            <div class="row">
+                                <div>
+                                    <p class="text-sm-start"><b>Срок выполнения:</b> {% if task.d_time > now %}
+                                        (осталось {{ task.d_time|timeuntil:now }})
+                                        {% else %}
+                                        Просрочено
+                                        {% endif %}</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm-start"><b>Важность:</b> {% if task.priority %}
+                                        {{ task.priority }}
+                                        {% endif %} </p>
+                                </div>
+                                <div>
+                                    <p class="text-sm-start"><b>Проект:</b> {% if project %}
+                                        {{ project.name }}
+                                        {% endif %}</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm-start"><b>Команда:</b> {% if team %}
+                                        {% for member in team.members.all %}
+                                        {{ member.username }}{% if not forloop.last %}, {% endif %}
+                                        {% endfor %}
+                                        {% else %}
+                                        Команда не назначена
+                                        {% endif %}</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm-start"><b>Ответственный:</b> {% if assigned_to %}
+                                        {{ assigned_to.username }}
+                                        {% else %}
+                                        Не назначен
+                                        {% endif %}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body text-dark">
+                        <h5 class="card-title"><b>Название задачи: </b>{{ task.title }}</h5><br>
+                        <p class="card-text"><b>Описание задачи: </b>{{ task.description }}</p><br>
+                        <p class="card-text"><b>Фото:</b></p>
+                        <div class="row">
+                            {% for ti in task_img %}
+                            <div class="col-md-4">
+                                <div class="card my-2">
+                                    <img class="image-thumbail" src="{{ ti.img.url }}" alt="Card image cap">
+                                    <form action="{% url 'delete_photo' ti.id %}" method="post" class="d-inline">
+                                        {% csrf_token %}
+                                        <input type="submit" class="btn btn-danger btn-sm" value="Удаление">
+                                    </form>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <a href="{% url 'update_task' task.id %}" class="btn btn-success btn-sm mx-3">Редактирование задачи</a>
+                <a href="{% url 'add_photo' task.id %}" class="btn btn-dark btn-sm mx-3">Добавить фото</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

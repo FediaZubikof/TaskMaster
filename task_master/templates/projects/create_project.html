@@ -1,0 +1,23 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Создание нового проекта</h2>
+
+    {% if error_message %}
+    <div class="alert alert-danger">
+        {{ error_message }}
+    </div>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }} <!-- Форма создания проекта -->
+        <!--        {{ team_form.as_p }} &lt;!&ndash; Форма создания команды &ndash;&gt;-->
+        <button type="submit" class="btn btn-primary mt-3">Создать проект</button>
+    </form>
+
+    <a href="{% url 'projects' %}" class="btn btn-secondary mt-3">Назад к списку проектов</a>
+</div>
+{% endblock content %}
+

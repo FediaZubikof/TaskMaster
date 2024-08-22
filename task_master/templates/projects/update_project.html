@@ -1,0 +1,18 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+
+    <div class="container mt-5">
+        <h2>Редактирование проекта</h2>
+
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary mt-3">Сохранить изменения</button>
+        </form>
+
+        <a href="{% url 'projects' %}" class="btn btn-secondary mt-3">Назад к списку проектов</a>
+        <a href="{% url 'tasks' %}" class="btn btn-secondary mt-3">Назад к списку задач</a>
+    </div>
+
+{% endblock content %}

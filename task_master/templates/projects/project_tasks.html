@@ -1,0 +1,47 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block content %}
+<div class="col-12 my-5">
+    <h1 class="text-dark Roboto my-5">
+        Задачи для проекта: {{ project.name }}
+    </h1>
+
+    <div class="container text-dark Roboto">
+        <div class="row mt-5">
+            <div class="shadow col-lg-10 m-auto p-5 text-dark border border-dark rounded-4">
+                {% if task_list %}
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Название</th>
+                        <th>Описание</th>
+                        <th>Приоритет</th>
+                        <th>Срок выполнения</th>
+                        <th>Ответственный</th>
+                        <th>Статус</th>
+                        <th>Дата создания</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for task in task_list %}
+                    <tr>
+                        <td>{{ task.title }}</td>
+                        <td>{{ task.description|default:"-" }}</td>
+                        <td>{{ task.priority|default:"-" }}</td>
+                        <td>{{ task.d_time|date:"d M Y H:i"|default:"Не указан" }}</td>
+                        <td>{{ task.assigned_to|default:"Не назначен" }}</td>
+                        <td>{{ task.get_status_display|default:"-" }}</td>
+                        <td>{{ task.c_time|date:"d M Y H:i" }}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p>Для этого проекта нет задач.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+

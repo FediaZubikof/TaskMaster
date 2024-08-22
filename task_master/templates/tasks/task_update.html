@@ -1,0 +1,75 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="col-12 my-5">
+    <h1 class="text-dark Roboto my-5">
+        Обновление задачи
+    </h1>
+    {% if messages %}
+    {% for message in messages %}
+    <p {% if message.tags %} class="Roboto alert alert-{{message.tags}} mb-5 {% endif %} ">{{message}} </p>
+    {% endfor %}
+    {% endif %}
+
+    <div class="container text-dark Roboto">
+        <div class="row mt-5">
+            <div class="shadow col-lg-6 m-auto p-5 text-dark border border-dark rounded-4">
+                {% if form %}
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    {% for fm in form %}
+                    <div class="form-group">
+                        {{fm.label_tag}}
+                        {{fm}}
+                        <small class="text-warning-subtle">{{fm.errors|striptags}}</small>
+                        <br><br>
+                    </div>
+                    {% endfor %}
+
+                    <input type="submit" value="Обновить задачу" class="btn btn-warning rounded-5 w-100">
+
+                    {% if form.non_field_errors %}
+                    {% for error in form.non_field_errors %}
+                    <p class="alert alert-danger my-3">{{error}}</p>
+                    {% endfor %}
+                    {% endif %}
+                </form>
+                <br>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-lg-6 m-auto">
+                <div class="card bg-light border-dark mb-3">
+                    <div class="card-header">
+                        <h5>Дополнительная информация</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Срок выполнения:</strong> {{ task.d_time|date:"Y-m-d H:i" }}</p>
+                        <p><strong>Важность:</strong> {{ task.priority }}</p>
+                        <p><strong>Проект:</strong> {{ task.project.name }}</p>
+                        <p><strong>Команда:</strong>
+                            {% if task.team %}
+                            {{ task.team.name }}
+                            {% else %}
+                            Не назначена
+                            {% endif %}
+                        </p>
+                        <p><strong>Ответственный:</strong>
+                            {% if task.assigned_to %}
+                            {{ task.assigned_to.username }}
+                            {% else %}
+                            Не назначен
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

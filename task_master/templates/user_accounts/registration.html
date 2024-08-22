@@ -1,0 +1,47 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="col-12  my-5">
+    <h1 class="text-dark Roboto my-5">
+        Регистрация
+    </h1>
+    {% if messages %}
+    {% for message in messages %}
+    <p
+            {% if message.tags %} class="Roboto alert alert-{{ message.tags }} mb-5 {% endif %} ">{{ message }} </p>
+    {% endfor %}
+    {% endif %}
+
+    <div class="container">
+        <div class="row mt-5">
+            <div class="shadow col-lg-6 m-auto p-5 text-dark-emphasis bg-dark-subtle  rounded-4">
+                <p class="h4 py-3 Roboto">Создать новую учетную запись.</p>
+
+                <form action="" method="POST" novalidate> {% csrf_token %}
+                    {% for fm in registration_form %}
+                    <div class="form-group">
+                        {{ fm.label_tag }} {{ fm }} <small
+                            class="text-warning-subtle">{{ fm.errors|striptags }}</small> <br><br>
+                    </div>
+                    {% endfor %}
+                    <input type="submit" value="Создать" class="btn btn-dark Roboto rounded-5 w-100">
+
+                    {% if form.non_field_errors %}
+                    {% for error in form.non_field_errors %}
+                    <p class="alert alert-danger my-3 Roboto">{{ error }}</p>
+                    {% endfor %}
+                    {% endif %}
+
+                </form>
+                <br>
+                <p><a href="{% url 'password_reset' %}">Забыли пароль?</a></p>
+                <p>Если у вас уже есть учетная запись, нажмите на <a class="Roboto"
+                                                                     href="{% url 'login' %}">Вход</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
