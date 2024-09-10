@@ -79,13 +79,25 @@ WSGI_APPLICATION = 'task_master.wsgi.application'
 # База данных
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-
+# SQLite
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# Postgresql
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'db_taskmaster',
+#         'USER': 'postgres',
+#         'PASSWORD': '*******',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
 
 # Проверка пароля
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -140,9 +152,9 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'fedia@gmail.com'
+EMAIL_HOST_USER = 'fediazubikof@gmail.com'
 EMAIL_HOST_PASSWORD = '**********'
-DEFAULT_FROM_EMAIL = 'fedia@gmail.com'
+DEFAULT_FROM_EMAIL = 'fediazubikof@gmail.com'
 
 # Настройка шифрования данных пользователя
 load_dotenv()
@@ -154,13 +166,13 @@ if FIELD_ENCRYPTION_KEY:
 else:
     print("Ключ шифрования не загружен!")
 
+# Настройки периодических задач
+
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 CELERY_TIMEZONE = 'Europe/Minsk'
-
-# Настройки периодических задач
 
 CELERY_BEAT_SCHEDULE = {
     'send-reminders-every-morning': {

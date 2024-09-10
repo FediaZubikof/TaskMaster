@@ -98,19 +98,37 @@ class TaskCreateView(CreateView):
         return super().form_valid(form)
 
 
+# class TaskUpdateView(UpdateView):
+#     model = Task
+#     form_class = TaskUpdateForm
+#     template_name = 'tasks/task_update.html'
+#
+#     def get_success_url(self):
+#         # Перенаправление на страницу деталей задачи после успешного обновления
+#         return reverse('more_details', args=[self.object.pk])
+#
+#     def form_valid(self, form):
+#         # Устанавливаем текущего пользователя как автора изменений
+#         form.instance.user = self.request.user
+#         return super().form_valid(form)
 class TaskUpdateView(UpdateView):
     model = Task
     form_class = TaskUpdateForm
     template_name = 'tasks/task_update.html'
 
     def get_success_url(self):
-        # Перенаправление на страницу деталей задачи после успешного обновления
         return reverse('more_details', args=[self.object.pk])
 
     def form_valid(self, form):
-        # Устанавливаем текущего пользователя как автора изменений
         form.instance.user = self.request.user
-        return super().form_valid(form)
+        response = super().form_valid(form)
+
+        # Обновляем состав команды на основе данных формы
+        team_members = form.cleaned_data.get('team_members')
+        if team_members:
+            form.instance.team.members.set(team_members)
+
+        return response
 
 
 class TaskDeleteView(DeleteView):
@@ -196,11 +214,16 @@ class ProjectCreateView(UserPassesTestMixin, CreateView):
         team_members = form.cleaned_data.get('team_members')
 
         if new_team_name and team_members:
-            # Создаем новую команду и добавляем участников
-            team = Team.objects.create(name=new_team_name)
-            for member in team_members:
-                TeamMembership.objects.create(user=member, team=team, role=TeamMembership.MEMBER)
-            form.instance.team = team
+            # Проверка существования команды с таким именем
+            if Team.objects.filter(name=new_team_name).exists():
+                form.add_error('new_team_name', 'Команда с таким именем уже существует.')
+                return self.form_invalid(form)
+            else:
+                # Создаем новую команду и добавляем участников
+                team = Team.objects.create(name=new_team_name)
+                for member in team_members:
+                    TeamMembership.objects.create(user=member, team=team, role=TeamMembership.MEMBER)
+                form.instance.team = team
         elif form.cleaned_data.get('team'):
             form.instance.team = form.cleaned_data.get('team')
         else:

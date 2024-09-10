@@ -66,6 +66,48 @@ class TaskForm(forms.ModelForm):
         return cleaned_data
 
 
+# class TaskUpdateForm(forms.ModelForm):
+#     assigned_to = forms.ModelChoiceField(
+#         queryset=User.objects.none(),
+#         required=False,
+#         widget=forms.Select(attrs={'class': 'form-control'}),
+#         label='Ответственный'
+#     )
+#
+#     class Meta:
+#         model = Task
+#         fields = ['title', 'description', 'priority', 'd_time', 'project', 'assigned_to']
+#         widgets = {
+#             'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Название задачи'}),
+#             'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Описание задачи'}),
+#             'priority': forms.Select(attrs={'class': 'form-control'}),
+#             'd_time': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
+#             'project': forms.Select(attrs={'class': 'form-control'}),
+#         }
+#
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#
+#         # Заполнение поля ответственным в зависимости от выбранного проекта
+#         if 'project' in self.data:
+#             try:
+#                 project_id = int(self.data.get('project'))
+#                 project = Project.objects.get(pk=project_id)
+#                 self.fields['assigned_to'].queryset = project.team.members.all()
+#             except (ValueError, TypeError, Project.DoesNotExist):
+#                 self.fields['assigned_to'].queryset = User.objects.none()
+#         elif self.instance.pk and self.instance.project:
+#             self.fields['assigned_to'].queryset = self.instance.project.team.members.all()
+#
+#     def clean(self):
+#         cleaned_data = super().clean()
+#         project = cleaned_data.get('project')
+#
+#         if project:
+#             team = project.team
+#             cleaned_data['team'] = team  # Привязка команды к задаче
+#
+#         return cleaned_data
 class TaskUpdateForm(forms.ModelForm):
     assigned_to = forms.ModelChoiceField(
         queryset=User.objects.none(),
@@ -73,10 +115,16 @@ class TaskUpdateForm(forms.ModelForm):
         widget=forms.Select(attrs={'class': 'form-control'}),
         label='Ответственный'
     )
+    team_members = forms.ModelMultipleChoiceField(
+        queryset=User.objects.all(),  # Выбор всех пользователей
+        required=False,
+        widget=forms.SelectMultiple(attrs={'class': 'form-control'}),
+        label='Члены команды'
+    )
 
     class Meta:
         model = Task
-        fields = ['title', 'description', 'priority', 'd_time', 'project', 'assigned_to']
+        fields = ['title', 'description', 'priority', 'd_time', 'project', 'assigned_to', 'team']
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Название задачи'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Описание задачи'}),
@@ -88,16 +136,18 @@ class TaskUpdateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # Заполнение поля ответственным в зависимости от выбранного проекта
         if 'project' in self.data:
             try:
                 project_id = int(self.data.get('project'))
                 project = Project.objects.get(pk=project_id)
                 self.fields['assigned_to'].queryset = project.team.members.all()
+                self.fields['team_members'].queryset = project.team.members.all()  # Предзагрузка участников команды
             except (ValueError, TypeError, Project.DoesNotExist):
                 self.fields['assigned_to'].queryset = User.objects.none()
+                self.fields['team_members'].queryset = User.objects.none()
         elif self.instance.pk and self.instance.project:
             self.fields['assigned_to'].queryset = self.instance.project.team.members.all()
+            self.fields['team_members'].queryset = self.instance.project.team.members.all()
 
     def clean(self):
         cleaned_data = super().clean()
@@ -106,6 +156,13 @@ class TaskUpdateForm(forms.ModelForm):
         if project:
             team = project.team
             cleaned_data['team'] = team  # Привязка команды к задаче
+
+            # Обновление состава команды
+            team_members = cleaned_data.get('team_members')
+            if team_members:
+                team.members.set(team_members)
+        else:
+            self.add_error('project', 'Проект не выбран. Выберите проект, чтобы назначить команду.')
 
         return cleaned_data
 

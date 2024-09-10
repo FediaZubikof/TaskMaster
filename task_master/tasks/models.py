@@ -70,7 +70,8 @@ class Task(models.Model):
         verbose_name='Уровень приоритета'
     )
     mark = models.BooleanField(default=False)
-    assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='assigned_tasks', verbose_name='Ответственный')
+    assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True,
+                                    related_name='assigned_tasks', verbose_name='Ответственный')
 
     def __str__(self):
         return self.title
